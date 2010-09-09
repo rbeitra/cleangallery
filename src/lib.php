@@ -22,7 +22,22 @@ function getRequestInput($key, $default, $pattern = ''){
 	return $result;
 }
 
+function memoize(){	
+	static $memo;
+	$argsandfunc = func_get_args();
+	if(!is_array($memo)) $memo = array();
+	$address = implode('::', $argsandfunc);
+	$hash = md5($address);
+	if(!isset($memo[$hash])){
+		$memo[$hash] = call_user_func_array(array_pop($argsandfunc), $argsandfunc);
+	}
+	return $memo[$hash];
+}
+
 function getDirectoryContents($directory){
+	return memoize($directory, 'getDirectoryContentsExec');
+}
+function getDirectoryContentsExec($directory){
     if(substr($directory,-1) == '/'){
         $directory = substr($directory,0,-1);
     }
@@ -72,6 +87,9 @@ function getDirectoryContents($directory){
 }
 
 function getGalleries(){
+	return memoize('getGalleriesExec');
+}
+function getGalleriesExec(){
 	$contents = getDirectoryContents(GALLERIES_DIR);
 	foreach($contents as $k => $v){
 		if($v['kind'] == 'directory'){
@@ -82,6 +100,9 @@ function getGalleries(){
 }
 
 function getGalleryContents($name){
+	return memoize($name, 'getGallerContentsExec');
+}
+function getGallerContentsExec($name){
 	$galleries = getGalleries();
 	$result = FALSE;
 	$contents = FALSE;
@@ -104,18 +125,32 @@ function getGalleryContents($name){
 	return $result;
 }
 
+function getGalleryPhotoIndex($gallery, $photo){
+	return memoize($gallery, $photo, 'getGalleryPhotoIndexExec');
+}
+function getGalleryPhotoIndexExec($gallery, $photo){
+	$images = getGalleryContents($gallery);
+	if($images){
+		//find it
+		foreach($images as $k => $v){
+			if($v['name'] == $photo){
+				return $k;
+			}
+		}
+	}
+	return -1;
+}
+
 function getGalleryPhoto($gallery, $photo, $offset){
+//	return memoize($gallery, $photo, $offset, 'getGalleryPhotoExec');
+//}
+//function getGalleryPhotoExec($gallery, $photo, $offset){
 	$result = FALSE;
 	$images = getGalleryContents($gallery);
 	if($images){
 		//find it
-		$index = -1;
-		foreach($images as $k => $v){
-			if($v['name'] == $photo){
-				$index = $k;
-				break;
-			}
-		}
+		$index = getGalleryPhotoIndex($gallery, $photo);
+		
 		if($index != -1){
 			$index = ($index + $offset + count($images))%count($images);
 			$result = $images[$index];
