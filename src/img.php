@@ -68,7 +68,10 @@ if($create_thumb){
 		
 		imagecopyresampled($thumb_image, $image, 0, 0, ($iwidth-$swidth)*0.5, ($iheight-$sheight)*0.5, $owidth, $oheight, $swidth, $sheight);
 		$thumb_generated = TRUE;
-		imagejpeg($thumb_image, $path, 90);//this gives an error if it fails. supress it and we will return the generated image anyway!
+		//$errlevel = ini_get('error_reporting');
+		//error_reporting(0);//this may give an error if it fails. we could suppress it and we will return the generated image anyway!
+		imagejpeg($thumb_image, $path, 90);
+		//error_reporting($errlevel);
 		$thumb_exists = file_exists($path);
 	}
 }
@@ -86,7 +89,7 @@ if($thumb_exists && isset($headers['If-Modified-Since']) && (strtotime($headers[
 		header('Content-Length: '.filesize($path));
 		header($type);
 		if($thumb_generated){
-			imagejpeg($thumb_image, NULL, 0);
+			imagejpeg($thumb_image, NULL, 90);
 		} else {
 			readfile($path);
 		}
