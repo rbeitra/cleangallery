@@ -78,7 +78,7 @@ if($create_thumb){
 
 
 
-$mtime = 0;//filemtime($path);
+$mtime = filemtime($path);
 if($thumb_exists && isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $mtime)){
 	//The image has been cached. Don't send it.
 	header('Last-Modified: '.gmdate('D, d M Y H:i:s', $mtime).' GMT', true, 304);
