@@ -13,11 +13,23 @@ $title = SITE_NAME;
 <div class="title"><?=SITE_NAME?></div>
 <?php
 
+function notify($message){
+	if(NOTIFICATIONS) echo '<div class="notification">'.$message.'</div>';
+}
+
 $path = $gallery = getRequestInput('gallery', '', '/^[0-9a-zA-Z_\040\/]+$/');
 $gallery = getRequestInput('gallery', '', '/^[0-9a-zA-Z_\040\/]+$/');
 $photo = getRequestInput('photo', '');
 $galleryurl = './?gallery='.rawurlencode($gallery);
 $photourl = GALLERIES_DIR.rawurlencode($gallery).'/'.rawurlencode($photo);
+
+//some startup checks of configuration etc
+if(!getDirectoryReadability(GALLERIES_DIR)){
+	notify('Warning: The galleries directory is not readable or does not exist.');
+}
+if(!getDirectoryWritability(THUMBS_DIR)){
+	notify('Warning: The thumbs directory is not writable or does not exist. This will severely affect performance!');
+}
 
 if($gallery == ''){
 	if(LIST_GALLERIES){
@@ -96,9 +108,13 @@ EOD;
 EOD;
 	}
 }
-$time_end = microtime(true);
-$total_time = $time_end - $time_start;
-//echo '<div class="toolbar">page generated in ' . $total_time . ' seconds</div>';
+
+if(GENERATE_TIME){
+	$time_end = microtime(true);
+	$total_time = $time_end - $time_start;
+	notify("Page generated in $total_time seconds");
+}
+
 echo '</div>';
 if(GA_ID){
 	$gaid = GA_ID;

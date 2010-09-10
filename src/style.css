@@ -62,6 +62,14 @@ a {
 	float: none;
 	clear: both;
 }
+.notification{
+	color: #800000;
+	font-weight: bold;
+	font-size: 14px;
+	padding: 4px;
+	float: none;
+	clear: both;
+}
 img{
 	border: 0px;
 }

@@ -34,19 +34,30 @@ function memoize(){
 	return $memo[$hash];
 }
 
+function getDirectoryReadability($directory){
+    $directory = rtrim($directory, '/');
+    if(!file_exists($directory) || !is_dir($directory)){
+        return FALSE;
+    } else {
+    	return is_readable($directory);
+    }
+}
+function getDirectoryWritability($directory){
+    $directory = rtrim($directory, '/');
+    if(!file_exists($directory) || !is_dir($directory)){
+        return FALSE;
+    } else {
+    	return is_writable($directory);
+    }
+}
+
 function getDirectoryContents($directory){
 	return memoize($directory, 'getDirectoryContentsExec');
 }
 function getDirectoryContentsExec($directory){
-    if(substr($directory,-1) == '/'){
-        $directory = substr($directory,0,-1);
-    }
- 
-    if(!file_exists($directory) || !is_dir($directory)){
-        return FALSE;
- 
-    } elseif(is_readable($directory)){
-    	$directory_tree = array();
+    $directory = rtrim($directory, '/');
+    $directory_tree = array();
+   	if(getDirectoryReadability($directory)){
         $directory_list = opendir($directory);
         while (FALSE !== ($file = readdir($directory_list))){
             if($file != '.' && $file != '..'){
@@ -80,10 +91,8 @@ function getDirectoryContentsExec($directory){
         }
         ksort($directory_tree, SORT_STRING);
         closedir($directory_list);  
-        return $directory_tree;
-    }else{
-        return FALSE;    
     }
+    return $directory_tree;
 }
 
 function getGalleries(){
@@ -91,6 +100,7 @@ function getGalleries(){
 }
 function getGalleriesExec(){
 	$contents = getDirectoryContents(GALLERIES_DIR);
+	$subdirs = array();
 	foreach($contents as $k => $v){
 		if($v['kind'] == 'directory'){
 			$subdirs[] = $v;

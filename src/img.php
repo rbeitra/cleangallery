@@ -1,6 +1,7 @@
 <?php
 require_once './lib.php';
-
+error_reporting(0);//this may give an error if it fails. we could suppress it and we will return the generated image anyway!
+		
 $gallery = getRequestInput('gallery', '', '/^[0-9a-zA-Z_\040\/]+$/');
 $photo = getRequestInput('photo', '');
 $width = getRequestInput('width', 0, '/^[0-9]+$/');
@@ -77,7 +78,6 @@ if($create_thumb){
 }
 
 
-
 $mtime = filemtime($path);
 if($thumb_exists && isset($headers['If-Modified-Since']) && (strtotime($headers['If-Modified-Since']) == $mtime)){
 	//The image has been cached. Don't send it.
@@ -86,16 +86,22 @@ if($thumb_exists && isset($headers['If-Modified-Since']) && (strtotime($headers[
 	if($thumb_exists || $thumb_generated){
 		//We have a thumb in memory or on disk. Prefer memory to avoid more io.
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $mtime).' GMT', true, 200);
-		header('Content-Length: '.filesize($path));
 		header($type);
 		if($thumb_generated){
+			//get the size first!
+			ob_start();
 			imagejpeg($thumb_image, NULL, 90);
+			$thumb_str = ob_get_contents();
+			$thumb_size = ob_get_length();
+			ob_end_clean();
+			header('Content-Length: '.$thumb_size);
+			echo $thumb_str;
 		} else {
+			header('Content-Length: '.filesize($path));
 			readfile($path);
 		}
 	}
 }
-
 if($thumb_generated){
 	imagedestroy($thumb_image);
 }

@@ -22,4 +22,14 @@ define('GALLERIES_DIR', './galleries/');
 //Where should we cache the thumbnails?
 define('THUMBS_DIR', './thumbs/');
 
+
+//print the warnings and things
+define('NOTIFICATIONS', TRUE);
+
+
+//print the page generation time
+define('GENERATE_TIME', FALSE);
+
+
+
 ?>
