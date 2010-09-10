@@ -18,10 +18,11 @@ function notify($message){
 }
 
 $path = $gallery = getRequestInput('gallery', '', '/^[0-9a-zA-Z_\040\/]+$/');
-$gallery = getRequestInput('gallery', '', '/^[0-9a-zA-Z_\040\/]+$/');
+$gallery = getRequestInput('gallery', SINGLE_GALLERY, '/^[0-9a-zA-Z_\040\/]+$/');
 $photo = getRequestInput('photo', '');
 $galleryurl = './?gallery='.rawurlencode($gallery);
 $photourl = GALLERIES_DIR.rawurlencode($gallery).'/'.rawurlencode($photo);
+
 
 //some startup checks of configuration etc
 if(!getDirectoryReadability(GALLERIES_DIR)){
@@ -52,7 +53,7 @@ EOD;
 	if($images){
 		$thumbwidth = THUMB_WIDTH;
 		$thumbheight = THUMB_HEIGHT;
-		if(LIST_GALLERIES){
+		if(!SINGLE_GALLERY && LIST_GALLERIES){
 			$top = '<div class="toolbar"><a href="./">[Top]</a></div>';
 		} else {
 			$top = '';
@@ -88,7 +89,7 @@ EOD;
 		$filename = $photo['filename'];
 		$nexturl = './?gallery='.urlencode($gallery).'&amp;photo='.urlencode($nextphoto['name']);
 		$prevurl = './?gallery='.urlencode($gallery).'&amp;photo='.urlencode($prevphoto['name']);
-		if(LIST_GALLERIES){
+		if(!SINGLE_GALLERY && LIST_GALLERIES){
 			$top = '<a href="./">[Top]</a> ';
 		} else {
 			$top = '';

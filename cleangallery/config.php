@@ -8,6 +8,11 @@ define('GA_ID', '');
 define('LIST_GALLERIES', TRUE);
 
 
+//Should we go straight to a gallery folder rather than displaying a list? set to '' to ignore
+//This will effectively also make LIST_GALLERIES be FALSE
+define('SINGLE_GALLERY', '');
+
+
 //What size should the thumbnails be?
 define('THUMB_WIDTH', 256);
 define('THUMB_HEIGHT', 256);
@@ -23,11 +28,11 @@ define('GALLERIES_DIR', './galleries/');
 define('THUMBS_DIR', './thumbs/');
 
 
-//print the warnings and things
+//Print the warnings and things
 define('NOTIFICATIONS', TRUE);
 
 
-//print the page generation time
+//Print the page generation time
 define('GENERATE_TIME', FALSE);
 
 
