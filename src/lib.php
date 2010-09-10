@@ -142,9 +142,6 @@ function getGalleryPhotoIndexExec($gallery, $photo){
 }
 
 function getGalleryPhoto($gallery, $photo, $offset){
-//	return memoize($gallery, $photo, $offset, 'getGalleryPhotoExec');
-//}
-//function getGalleryPhotoExec($gallery, $photo, $offset){
 	$result = FALSE;
 	$images = getGalleryContents($gallery);
 	if($images){
