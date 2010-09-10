@@ -1,1 +1,6 @@
 A clean and simple PHP image gallery
+
+Installation
+1 Copy the files to your webserver
+2 Organize your photos in folders in the "galleries" folder
+3 Tweak the settings in "config.php" to your liking
