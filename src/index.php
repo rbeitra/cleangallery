@@ -2,9 +2,9 @@
 $time_start = microtime(true);
 require_once './lib.php';
 $title = SITE_NAME;
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
+?><!DOCTYPE html>
+<html lang="en">
+<meta charset=utf-8>
 <title><?=SITE_NAME?></title>
 <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
@@ -16,8 +16,8 @@ $title = SITE_NAME;
 $path = $gallery = getRequestInput('gallery', '', '/^[0-9a-zA-Z_\040\/]+$/');
 $gallery = getRequestInput('gallery', '', '/^[0-9a-zA-Z_\040\/]+$/');
 $photo = getRequestInput('photo', '');
-$galleryurl = './?gallery='.$gallery;
-$photourl = GALLERIES_DIR.$gallery.'/'.$photo;
+$galleryurl = './?gallery='.rawurlencode($gallery);
+$photourl = GALLERIES_DIR.rawurlencode($gallery).'/'.rawurlencode($photo);
 
 if($gallery == ''){
 	if(LIST_GALLERIES){
@@ -26,7 +26,7 @@ if($gallery == ''){
 			//render gallery list
 			foreach($galleries as $k => $v){
 				$name = $v['name'];
-				$url = './?gallery='.$name;
+				$url = './?gallery='.urlencode($name);
 				echo <<<EOD
 	<div class="gallery">
 		<div class="galleryname"><a href="$url">$name</a></div>
@@ -53,9 +53,11 @@ EOD;
 		//render photo list
 		foreach($images as $k => $v){
 			$name = $v['name'];
+			$ename = urlencode($name);
+			$egallery = urlencode($gallery);
 			$filename = $v['filename'];
-			$url = './?gallery='.$gallery.'&photo='.$name;
-			$thumburl = "./img.php?gallery=$gallery&photo=$name&width=$thumbwidth&height=$thumbheight";
+			$url = './?gallery='.$egallery.'&amp;photo='.$ename;
+			$thumburl = "./img.php?gallery=$egallery&amp;photo=$ename&amp;width=$thumbwidth&amp;height=$thumbheight";
 			echo <<<EOD
 <div class="thumbnail"><a href="$url"><img class="image" src="$thumburl" width="$thumbwidth" height="$thumbheight"></a></div>
 	
@@ -72,8 +74,8 @@ EOD;
 		//render photo
 		$path = $photo['path'];
 		$filename = $photo['filename'];
-		$nexturl = './?gallery='.$gallery.'&photo='.$nextphoto['name'];
-		$prevurl = './?gallery='.$gallery.'&photo='.$prevphoto['name'];
+		$nexturl = './?gallery='.urlencode($gallery).'&amp;photo='.urlencode($nextphoto['name']);
+		$prevurl = './?gallery='.urlencode($gallery).'&amp;photo='.urlencode($prevphoto['name']);
 		if(LIST_GALLERIES){
 			$top = '<a href="./">[Top]</a> ';
 		} else {
