@@ -58,9 +58,14 @@ EOD;
 		} else {
 			$top = '';
 		}
+		if(!SINGLE_GALLERY){
+			$galleryname = '<div class="galleryname">'.$gallery.'</div>';
+		} else {
+			$galleryname = '';
+		}
 			echo <<<EOD
 <div class="gallery">
-	<div class="galleryname">$gallery</div>
+	$galleryname
 	$top
 EOD;
 		//render photo list
@@ -97,9 +102,14 @@ EOD;
 		$tools = <<<EOD
 	<div class="toolbar">$top <a href="$galleryurl">[Index]</a> <a href="$prevurl">[Prev]</a> <a href="$nexturl">[Next]</a> <a href="$photourl">[Original]</a></div>
 EOD;
+		if(!SINGLE_GALLERY){
+			$galleryname = '<div class="galleryname">'.$gallery.'</div>';
+		} else {
+			$galleryname = '';
+		}
 		echo <<<EOD
 <div class="gallery">
-	<div class="galleryname">$gallery</div>
+	$galleryname
 	<div class="photodetails">$filename</div>
 	$tools
 	<div class="photo"><a href="$nexturl"><img class="image" src="$photourl" width="100%"></a></div>
