@@ -1,11 +1,23 @@
 <?php
 $time_start = microtime(true);
 require_once './lib.php';
+
+$gallery = getRequestInput('gallery', SINGLE_GALLERY, '/^[0-9a-zA-Z_\040\/]+$/');
+$photo = getRequestInput('photo', '');
+$galleryurl = './?gallery='.rawurlencode($gallery);
+$photourl = GALLERIES_DIR.rawurlencode($gallery).'/'.rawurlencode($photo);
 $title = SITE_NAME;
+if($gallery != ''){
+	$title .= ' - ' . $gallery;
+	if($photo != ''){
+		$title .= ' - ' . $photo;
+	}
+}
+
 ?><!DOCTYPE html>
 <html lang="en">
 <meta charset=utf-8>
-<title><?=SITE_NAME?></title>
+<title><?=$title?></title>
 <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
@@ -13,18 +25,10 @@ $title = SITE_NAME;
 <div class="title"><?=SITE_NAME?></div>
 <?php
 
+//some startup checks of configuration etc
 function notify($message){
 	if(NOTIFICATIONS) echo '<div class="notification">'.$message.'</div>';
 }
-
-$path = $gallery = getRequestInput('gallery', '', '/^[0-9a-zA-Z_\040\/]+$/');
-$gallery = getRequestInput('gallery', SINGLE_GALLERY, '/^[0-9a-zA-Z_\040\/]+$/');
-$photo = getRequestInput('photo', '');
-$galleryurl = './?gallery='.rawurlencode($gallery);
-$photourl = GALLERIES_DIR.rawurlencode($gallery).'/'.rawurlencode($photo);
-
-
-//some startup checks of configuration etc
 if(!getDirectoryReadability(GALLERIES_DIR)){
 	notify('Warning: The galleries directory is not readable or does not exist.');
 }
